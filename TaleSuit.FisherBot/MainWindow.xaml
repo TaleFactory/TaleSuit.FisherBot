@@ -1,0 +1,55 @@
+﻿<controls:AdonisWindow x:Class="TaleSuit.FisherBot.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="clr-namespace:AdonisUI.Controls;assembly=AdonisUI"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:context="clr-namespace:TaleSuit.FisherBot.Context"
+        xmlns:converter="clr-namespace:TaleSuit.FisherBot.Converter"
+        xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
+        mc:Ignorable="d"
+        Title="FisherBot" Height="350" Width="250"
+        ResizeMode="CanMinimize"
+        SizeToContent="Height"
+        WindowStartupLocation="CenterScreen"
+        d:DataContext="{d:DesignInstance context:MainWindowContext}">
+    <Window.Resources>
+        <converter:BoolToVisibilityConverter x:Key="TrueVisibleConverter" True="Visible" False="Collapsed"/>
+        <converter:BoolToVisibilityConverter x:Key="FalseVisibleConverter" True="Collapsed" False="Visible"/>
+        <converter:NullBooleanConverter x:Key="NullTrueConverter" NotNull="False" Null="True"/>
+        <converter:ReverseBoolConverter x:Key="ReverseBoolConverter"/>
+    </Window.Resources>
+    <b:Interaction.Triggers>
+        <b:EventTrigger EventName="Loaded">
+            <b:InvokeCommandAction Command="{Binding LoadedCommand}"></b:InvokeCommandAction>
+        </b:EventTrigger>
+    </b:Interaction.Triggers>
+    <Grid>
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <GroupBox Grid.Row="0" Header="Character" IsEnabled="{Binding Session, Converter={StaticResource NullTrueConverter}}">
+                <StackPanel>
+                    <ComboBox ItemsSource="{Binding Characters}" SelectedItem="{Binding Character}"></ComboBox>
+                    <Button Margin="0 5 0 0" Content="OK" Command="{Binding SelectCharacterCommand}"></Button>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Grid.Row="1" Header="Statistics" Margin="0 10 0 0">
+                <StackPanel>
+                    <TextBlock Text="{Binding FishCount, StringFormat={}Standard: {0}}"></TextBlock>
+                    <TextBlock Margin="0 5 0 0" Text="{Binding LegendaryFishCount, StringFormat={}Legendary: {0}}"></TextBlock>
+                </StackPanel>
+            </GroupBox>
+            <Button Grid.Row="2" Margin="0 10 0 0" IsEnabled="{Binding Stopping, Converter={StaticResource ReverseBoolConverter}}" Command="{Binding StartStopCommand}">
+                <Grid>
+                    <TextBlock Visibility="{Binding Running, Converter={StaticResource TrueVisibleConverter}}">STOP</TextBlock>
+                    <TextBlock Visibility="{Binding Running, Converter={StaticResource FalseVisibleConverter}}">START</TextBlock>
+                </Grid>
+            </Button>
+        </Grid>
+    </Grid>
+</controls:AdonisWindow>
